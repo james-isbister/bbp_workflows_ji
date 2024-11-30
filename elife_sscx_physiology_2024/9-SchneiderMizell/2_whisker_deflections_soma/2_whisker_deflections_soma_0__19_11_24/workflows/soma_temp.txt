@@ -1,0 +1,12 @@
+  "reports": {
+    "soma": {
+        "type": "compartment",
+        "sections": "soma",
+        "cells":  "hex0",
+        "variable_name": "v",
+        "dt": 0.1,
+        "compartments": "center",
+        "start_time": $soma_report_start_time,
+        "end_time": $soma_report_end_time
+    }
+  },

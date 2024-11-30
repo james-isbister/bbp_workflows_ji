@@ -1,0 +1,277 @@
+Run Default
+{
+    CircuitPath $CircuitPath
+    nrnPath $nrnPath
+    CellLibraryFile $CellLibraryFile
+
+    BioName $BioName
+    Atlas $Atlas
+
+    METypePath $METypePath
+    MEComboInfoFile $MEComboInfoFile
+    MorphologyPath $MorphologyPath
+    MorphologyType $MorphologyType
+
+    CurrentDir $path
+    OutputRoot $path
+    TargetFile $path/user.target
+
+    CircuitTarget $circuit_target
+    Duration $sim_duration
+    Dt 0.025
+
+    RNGMode Random123
+    BaseSeed $seed
+
+    Simulator CORENEURON
+    RunMode WholeCell
+    ForwardSkip 0
+
+    ExtracellularCalcium $ca
+    MinisSingleVesicle 1
+    SpikeLocation AIS
+    V_Init -80
+}
+
+Report soma
+{
+    Target $circuit_target
+    Type compartment
+    ReportOn v
+    Unit mV
+    Format Bin
+    Dt 0.1
+    StartTime 0
+    EndTime $sim_duration
+}
+
+Conditions Default
+{
+    randomize_Gaba_risetime False
+    SYNAPSES__init_depleted 1
+}
+
+
+# Delayed reconnection protocol
+
+## Connect all, minis use this weight
+Connection all_to_all
+{
+         Source Mosaic
+    Destination Mosaic
+         Weight 1.0
+}
+
+## Disconnect immediately
+Connection all_disconnect
+{
+         Source Mosaic
+    Destination Mosaic
+          Delay 0.025
+         Weight 0.0
+}
+
+## Reconnect after $reconn_delay ms
+Connection all_reconnect
+{
+         Source Mosaic
+    Destination Mosaic
+          Delay $reconn_delay
+         Weight 1.0
+}
+
+## Inject current towards holding voltage of -85 mV
+Stimulus hypamp
+{
+        Mode Current
+     Pattern Hyperpolarizing
+       Delay 0.0
+    Duration $sim_duration
+}
+
+StimulusInject hypamp_mosaic
+{
+    Stimulus hypamp
+      Target Mosaic
+}
+
+
+
+# Shot noise stimuli per layer
+
+Stimulus RelativeShotNoise_L1I
+{
+           Mode Current
+        Pattern RelativeShotNoise
+          Delay 0.0
+       Duration $sim_duration
+      DecayTime $shotn_decay_time
+       RiseTime $shotn_rise_time
+          AmpCV $shotn_amp_cv
+    MeanPercent $shotn_mean_pct_L1I
+      SDPercent $shotn_sd_pct_L1I
+}
+
+Stimulus RelativeShotNoise_L23E
+{
+           Mode Current
+        Pattern RelativeShotNoise
+          Delay 0.0
+       Duration $sim_duration
+      DecayTime $shotn_decay_time
+       RiseTime $shotn_rise_time
+          AmpCV $shotn_amp_cv
+    MeanPercent $shotn_mean_pct_L23E
+      SDPercent $shotn_sd_pct_L23E
+}
+
+Stimulus RelativeShotNoise_L23I
+{
+           Mode Current
+        Pattern RelativeShotNoise
+          Delay 0.0
+       Duration $sim_duration
+      DecayTime $shotn_decay_time
+       RiseTime $shotn_rise_time
+          AmpCV $shotn_amp_cv
+    MeanPercent $shotn_mean_pct_L23I
+      SDPercent $shotn_sd_pct_L23I
+}
+
+Stimulus RelativeShotNoise_L4E
+{
+           Mode Current
+        Pattern RelativeShotNoise
+          Delay 0.0
+       Duration $sim_duration
+      DecayTime $shotn_decay_time
+       RiseTime $shotn_rise_time
+          AmpCV $shotn_amp_cv
+    MeanPercent $shotn_mean_pct_L4E
+      SDPercent $shotn_sd_pct_L4E
+}
+
+Stimulus RelativeShotNoise_L4I
+{
+           Mode Current
+        Pattern RelativeShotNoise
+          Delay 0.0
+       Duration $sim_duration
+      DecayTime $shotn_decay_time
+       RiseTime $shotn_rise_time
+          AmpCV $shotn_amp_cv
+    MeanPercent $shotn_mean_pct_L4I
+      SDPercent $shotn_sd_pct_L4I
+}
+
+Stimulus RelativeShotNoise_L5E
+{
+           Mode Current
+        Pattern RelativeShotNoise
+          Delay 0.0
+       Duration $sim_duration
+      DecayTime $shotn_decay_time
+       RiseTime $shotn_rise_time
+          AmpCV $shotn_amp_cv
+    MeanPercent $shotn_mean_pct_L5E
+      SDPercent $shotn_sd_pct_L5E
+}
+
+Stimulus RelativeShotNoise_L5I
+{
+           Mode Current
+        Pattern RelativeShotNoise
+          Delay 0.0
+       Duration $sim_duration
+      DecayTime $shotn_decay_time
+       RiseTime $shotn_rise_time
+          AmpCV $shotn_amp_cv
+    MeanPercent $shotn_mean_pct_L5I
+      SDPercent $shotn_sd_pct_L5I
+}
+
+Stimulus RelativeShotNoise_L6E
+{
+           Mode Current
+        Pattern RelativeShotNoise
+          Delay 0.0
+       Duration $sim_duration
+      DecayTime $shotn_decay_time
+       RiseTime $shotn_rise_time
+          AmpCV $shotn_amp_cv
+    MeanPercent $shotn_mean_pct_L6E
+      SDPercent $shotn_sd_pct_L6E
+}
+
+Stimulus RelativeShotNoise_L6I
+{
+           Mode Current
+        Pattern RelativeShotNoise
+          Delay 0.0
+       Duration $sim_duration
+      DecayTime $shotn_decay_time
+       RiseTime $shotn_rise_time
+          AmpCV $shotn_amp_cv
+    MeanPercent $shotn_mean_pct_L6I
+      SDPercent $shotn_sd_pct_L6I
+}
+
+StimulusInject RelativeShotNoise_L1I_inject
+{
+    Stimulus RelativeShotNoise_L1I
+    Target Layer1
+}
+
+StimulusInject RelativeShotNoise_L23E_inject
+{
+    Stimulus RelativeShotNoise_L23E
+    Target Layer23Excitatory
+}
+
+StimulusInject RelativeShotNoise_L23I_inject
+{
+    Stimulus RelativeShotNoise_L23I
+    Target Layer23Inhibitory
+}
+
+StimulusInject RelativeShotNoise_L4E_inject
+{
+    Stimulus RelativeShotNoise_L4E
+    Target Layer4Excitatory
+}
+
+StimulusInject RelativeShotNoise_L4I_inject
+{
+    Stimulus RelativeShotNoise_L4I
+    Target Layer4Inhibitory
+}
+
+StimulusInject RelativeShotNoise_L5E_inject
+{
+    Stimulus RelativeShotNoise_L5E
+    Target Layer5Excitatory
+}
+
+StimulusInject RelativeShotNoise_L5I_inject
+{
+    Stimulus RelativeShotNoise_L5I
+    Target Layer5Inhibitory
+}
+
+StimulusInject RelativeShotNoise_L6E_inject
+{
+    Stimulus RelativeShotNoise_L6E
+    Target Layer6Excitatory
+}
+
+StimulusInject RelativeShotNoise_L6I_inject
+{
+    Stimulus RelativeShotNoise_L6I
+    Target Layer6Inhibitory
+}
+
+
+
+$single_neuron_opto_spike_stims
+
+

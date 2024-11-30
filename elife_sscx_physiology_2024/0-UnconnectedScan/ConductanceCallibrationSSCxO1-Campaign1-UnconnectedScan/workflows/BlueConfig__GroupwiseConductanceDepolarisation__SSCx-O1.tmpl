@@ -1,0 +1,310 @@
+Run Default
+{
+
+    CircuitPath $CircuitPath
+    nrnPath $nrnPath
+    CellLibraryFile $CellLibraryFile
+
+    BioName $BioName
+    Atlas $Atlas
+
+    METypePath $METypePath
+    MEComboInfoFile $MEComboInfoFile
+    MorphologyPath $MorphologyPath
+    MorphologyType $MorphologyType
+
+    CurrentDir $path
+    OutputRoot $path
+    TargetFile $path/user.target
+
+    CircuitTarget $circuit_target
+    Duration $sim_duration
+    Dt 0.025
+
+    RNGMode Random123
+    BaseSeed $seed
+    StimulusSeed $seed
+
+    Simulator CORENEURON
+    RunMode WholeCell
+    SecondOrder 0
+
+
+    ExtracellularCalcium $ca
+    SpikeLocation AIS
+    SpikeThreshold -30
+    Celsius 34
+    V_Init -80
+
+
+}
+
+Conditions Default
+{
+    randomize_Gaba_risetime False
+    SYNAPSES__init_depleted 1
+    SYNAPSES__minis_single_vesicle 1
+}
+
+Projection Thalamocortical_input_VPM
+{
+    Path /gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/projections/2021_02_12/vpm_region_by_region_flatmap/merged.sonata
+    PopulationID 1
+    Source proj_Thalamocortical_VPM_Source
+}
+
+Projection Thalamocortical_input_POM
+{
+    Path /gpfs/bbp.cscs.ch/project/proj83/circuits/Bio_M/20200805/projections/2021_02_12/pom_region_by_region_flatmap/merged.sonata
+    PopulationID 2
+    Source proj_Thalamocortical_POM_Source
+}
+
+# Standard soma voltage report
+
+# Report soma
+# {
+#     Target Mosaic
+#     Type compartment
+#     ReportOn v
+#     Unit mV
+#     Format Bin
+#     Dt 0.1
+#     StartTime $start_delay
+#     EndTime $sim_duration
+# }
+
+
+# Input spikes
+
+# # Replay stimulus from spike file
+# Stimulus spikeReplay
+# {
+#          Mode Current
+#         Delay 0.0
+#      Duration $sim_duration
+#       Pattern SynapseReplay
+#     SpikeFile $stim_file
+# }
+
+# StimulusInject spikeReplay_inject
+# {
+#     Stimulus spikeReplay
+#       Target Mosaic
+# }
+
+
+# No minis from virtual fibers proj_Thalamocortical_VPM_Source
+
+Connection no_minis-proj_Thalamocortical_VPM_Source
+{
+    Source proj_Thalamocortical_VPM_Source
+    Destination Mosaic
+    SpontMinis 0.0
+    Weight 1.0
+}
+
+# No minis from virtual fibers proj_Thalamocortical_POM_Source
+
+Connection no_minis-proj_Thalamocortical_POM_Source
+{
+    Source proj_Thalamocortical_POM_Source
+    Destination Mosaic
+    SpontMinis 0.0
+    Weight 1.0
+}
+
+
+# Delayed reconnection protocol
+
+## Connect all, minis use this weight
+
+Connection all_to_all
+{
+    Source Mosaic
+    Destination Mosaic
+    Weight 1.0
+}
+
+## Disconnect immediately
+
+Connection all_disconnect
+{
+    Source Mosaic
+    Destination Mosaic
+    Delay 0.025
+    Weight 0.0
+}
+
+## Reconnect after 1000 ms
+
+Connection all_reconnect
+{
+    Source Mosaic
+    Destination Mosaic
+    Delay $reconn_delay
+    Weight 1.0
+}
+
+Stimulus gExc_L1
+{
+    Mode Conductance
+    Pattern RelativeOrnsteinUhlenbeck
+    Delay $ornstein_uhlenbeck_delay
+    Duration $sim_duration
+    Reversal 0
+    Tau 2.7
+    MeanPercent $ornstein_uhlenbeck_mean_pct_L1I
+    SDPercent $ornstein_uhlenbeck_sd_pct_L1I
+}
+
+Stimulus gExc_L23E
+{
+    Mode Conductance
+    Pattern RelativeOrnsteinUhlenbeck
+    Delay $ornstein_uhlenbeck_delay
+    Duration $sim_duration
+    Reversal 0
+    Tau 2.7
+    MeanPercent $ornstein_uhlenbeck_mean_pct_L23E
+    SDPercent $ornstein_uhlenbeck_sd_pct_L23E
+}
+
+Stimulus gExc_L23I
+{
+    Mode Conductance
+    Pattern RelativeOrnsteinUhlenbeck
+    Delay $ornstein_uhlenbeck_delay
+    Duration $sim_duration
+    Reversal 0
+    Tau 2.7
+    MeanPercent $ornstein_uhlenbeck_mean_pct_L23I
+    SDPercent $ornstein_uhlenbeck_sd_pct_L23I
+}
+
+Stimulus gExc_L4E
+{
+    Mode Conductance
+    Pattern RelativeOrnsteinUhlenbeck
+    Delay $ornstein_uhlenbeck_delay
+    Duration $sim_duration
+    Reversal 0
+    Tau 2.7
+    MeanPercent $ornstein_uhlenbeck_mean_pct_L4E
+    SDPercent $ornstein_uhlenbeck_sd_pct_L4E
+}
+
+Stimulus gExc_L4I
+{
+    Mode Conductance
+    Pattern RelativeOrnsteinUhlenbeck
+    Delay $ornstein_uhlenbeck_delay
+    Duration $sim_duration
+    Reversal 0
+    Tau 2.7
+    MeanPercent $ornstein_uhlenbeck_mean_pct_L4I
+    SDPercent $ornstein_uhlenbeck_sd_pct_L4I
+}
+
+Stimulus gExc_L5E
+{
+    Mode Conductance
+    Pattern RelativeOrnsteinUhlenbeck
+    Delay $ornstein_uhlenbeck_delay
+    Duration $sim_duration
+    Reversal 0
+    Tau 2.7
+    MeanPercent $ornstein_uhlenbeck_mean_pct_L5E
+    SDPercent $ornstein_uhlenbeck_sd_pct_L5E
+}
+
+Stimulus gExc_L5I
+{
+    Mode Conductance
+    Pattern RelativeOrnsteinUhlenbeck
+    Delay $ornstein_uhlenbeck_delay
+    Duration $sim_duration
+    Reversal 0
+    Tau 2.7
+    MeanPercent $ornstein_uhlenbeck_mean_pct_L5I
+    SDPercent $ornstein_uhlenbeck_sd_pct_L5I
+}
+
+Stimulus gExc_L6E
+{
+    Mode Conductance
+    Pattern RelativeOrnsteinUhlenbeck
+    Delay $ornstein_uhlenbeck_delay
+    Duration $sim_duration
+    Reversal 0
+    Tau 2.7
+    MeanPercent $ornstein_uhlenbeck_mean_pct_L6E
+    SDPercent $ornstein_uhlenbeck_sd_pct_L6E
+}
+
+Stimulus gExc_L6I
+{
+    Mode Conductance
+    Pattern RelativeOrnsteinUhlenbeck
+    Delay $ornstein_uhlenbeck_delay
+    Duration $sim_duration
+    Reversal 0
+    Tau 2.7
+    MeanPercent $ornstein_uhlenbeck_mean_pct_L6I
+    SDPercent $ornstein_uhlenbeck_sd_pct_L6I
+}
+
+StimulusInject inject_gExc_L1
+{
+    Stimulus gExc_L1
+    Target Layer1
+}
+
+StimulusInject inject_gExc_L23E
+{
+    Stimulus gExc_L23E
+    Target Layer23Excitatory
+}
+
+StimulusInject inject_gExc_L23I
+{
+    Stimulus gExc_L23I
+    Target Layer23Inhibitory
+}
+
+StimulusInject inject_gExc_L4E
+{
+    Stimulus gExc_L4E
+    Target Layer4Excitatory
+}
+
+StimulusInject inject_gExc_L4I
+{
+    Stimulus gExc_L4I
+    Target Layer4Inhibitory
+}
+
+StimulusInject inject_gExc_L5E
+{
+    Stimulus gExc_L5E
+    Target Layer5Excitatory
+}
+
+StimulusInject inject_gExc_L5I
+{
+    Stimulus gExc_L5I
+    Target Layer5Inhibitory
+}
+
+StimulusInject inject_gExc_L6E
+{
+    Stimulus gExc_L6E
+    Target Layer6Excitatory
+}
+
+StimulusInject inject_gExc_L6I
+{
+    Stimulus gExc_L6I
+    Target Layer6Inhibitory
+}
+
