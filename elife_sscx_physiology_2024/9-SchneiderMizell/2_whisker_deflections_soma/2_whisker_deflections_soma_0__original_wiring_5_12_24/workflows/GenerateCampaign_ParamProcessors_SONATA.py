@@ -225,7 +225,8 @@ def generate_whisker_flick_stim(*, path, **kwargs):
     param_list = ["circuit_config", # base circuit
                   "stim_seed", "stim_target", "vpm_pct", "vpm_proj_name", "pom_pct", "pom_proj_name",  # stim. structure
                   "sim_duration", "stim_delay", "stim_rate",  # stim. series
-                  "vpm_mu", "pom_mu", "vpm_sigma", "pom_sigma", "vpm_spike_rate", "pom_spike_rate"]  # spikes
+                  "vpm_mu", "pom_mu", "vpm_sigma", "pom_sigma", "vpm_spike_rate", "pom_spike_rate",
+                  "index_shift"]  # spikes
     cfg = {p: kwargs.get(p) for p in param_list}
     stim_file_dict = {}
 
@@ -253,8 +254,8 @@ def generate_whisker_flick_stim(*, path, **kwargs):
             vpm_spiking_nids = []
         # Write to file and return file name used in the template
         vpm_stim_file = "vpm_input.dat"
-        vpm_spiking_gids = np.array(vpm_spiking_nids)
-        # vpm_spiking_gids = np.array(vpm_spiking_nids) + 1  # IMPORTANT: Convert SONATA node IDs (0-based) to NEURON cell IDs (1-based)!!
+        # vpm_spiking_gids = np.array(vpm_spiking_nids)
+        vpm_spiking_gids = np.array(vpm_spiking_nids) + cfg["index_shift"]  # IMPORTANT: Convert SONATA node IDs (0-based) to NEURON cell IDs (1-based)!!
                                                            # (See https://sonata-extension.readthedocs.io/en/latest/blueconfig-projection-example.html#dat-spike-files)
         # spikewriter.write_spikes(vpm_spike_times, vpm_spiking_gids, os.path.join(path, vpm_stim_file))
         # stim_file_dict.update({"vpm_stim_file": vpm_stim_file, "vpm_node_set": vpm_node_set, "vpm_stim_src": cfg["vpm_proj_name"]})
